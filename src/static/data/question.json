@@ -1,0 +1,13 @@
+{
+    "question":[
+        {"id": "question1",
+            "ques": "Who wrote national anthem of India ?",
+            "options":[
+                {"id":"qwertyuiop","text":"Rabinnath Tagore"},
+                {"id":"asdfghjkl","text":"Arjit Singh"},
+                {"id":"qwertyuiop","text":"Lata Mangeshkar"},
+                {"id":"qwertyuiop","text":"Shankar Manoharan"}
+            ]
+        }
+    ]
+}
