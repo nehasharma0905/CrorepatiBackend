@@ -5,13 +5,13 @@ const quiz = express.Router({mergeParams: true});;
 
 
 quiz.get("/getQuiz", (req:Request, res: Response)=>{
-    const questionArray = [questionJson.question]
+    const questionArray = questionJson.question
     res.json({quiz: questionArray})
 })
 
 
-quiz.post("/create", (req: Request, res: Response)=>{
-    res.json({message:"created"})
+quiz.post("/useLifeLine", (req: Request, res: Response)=>{
+    res.json({message:"lifeline used"})
 
 })
 
