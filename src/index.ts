@@ -1,12 +1,21 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
+import { db_connection } from './config/connections';
+import { generateCollection } from './models';
+import bodyParser from 'body-parser';
 const routers = require("./routers")
 
 
 dotenv.config();
+db_connection().then(()=>{
+  // generateCollection();
+  console.log("Database is up and running!")
+});
 
 const app: Express = express();
 const port = process.env.PORT;
+app.use(bodyParser.json())
+
 
 app.use('/v1', routers);
 
