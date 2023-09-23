@@ -24,9 +24,9 @@ quiz.post("/lockAnswer", async (req: Request, res: Response) => {
     const resBody = { ...req.body };
 
     const response = await markUserAnswer(resBody);
-    
+
     res.json({
-        isAnswerCorrect: false 
+       ...response
     })
 })
 

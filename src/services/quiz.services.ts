@@ -139,27 +139,44 @@ export const markUserAnswer = async (data: any): Promise<any> => {
         error: null,
         data: {},
     };
+    console.log("data", data);
     try {
         const getQuiz = await QuizModel.findOne({ quizId: data.quizId });
-        const questionSource = await QuestionModel.findOne({ questionId: data.questionId });
+        const questionSource = await QuestionModel.findOne({ _id: data.questionId });
         if (getQuiz) {
-            const quizQuestion = getQuiz.questions.find(
-                (el: any, index: number) => el.questionId == data.questionId
+            const quizQuestionIndex = getQuiz.questions.findIndex(
+                (el: any, index: number) => {
+                    if (el.questionId == data.questionId) {
+                        return { el, index };
+                    }
+                    else return false;
+                }
             );
+            const quizQuestion = getQuiz.questions[quizQuestionIndex];
+            console.log({questionSource, quizQuestion, quizQuestionIndex});
             if (quizQuestion && questionSource) {
                 quizQuestion.lockedAnswer = data.answer;
-                if(data.answer.id === questionSource.correct.id){
+                if(data.answerId === questionSource.correct.id){
                     quizQuestion.correct = true;
                     quizQuestion.earnedScore = data.earnedScore;
+                    getQuiz.score += Number(data.earnedScore);
+                    apiRes.status = true;
+                    apiRes.message = "question updated successfully";
+                    apiRes.data = {
+                        isCorrect: true,
+                        totalScore: getQuiz.score
+                    }
                 }
                 else {
                     quizQuestion.correct = false;
+                    apiRes.status = true;
+                    apiRes.message = "question updated successfully";
+                    apiRes.data = {
+                        isCorrect: false,
+                        totalScore: getQuiz.score
+                    }
                 }
-                const db_res = await getQuiz.save();
-                console.log("question updated", db_res);
-                apiRes.status = true;
-                apiRes.message = "question updated successfully";
-                apiRes.data = db_res;
+                await getQuiz.save();
                 return apiRes;
             } else {
                 apiRes.message = "question not found";
