@@ -15,7 +15,9 @@ db_connection().then(()=>{
 
 const app: Express = express();
 const port = process.env.PORT;
-app.use(cors())
+app.use(cors({
+  origin: "*"
+}))
 app.use(bodyParser.json())
 
 

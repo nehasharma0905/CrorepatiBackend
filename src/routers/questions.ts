@@ -13,11 +13,7 @@ questions.get("/:questionId", async (req:Request, res: Response)=>{
 })
 
 
-questions.post("/:questionId/lockAnswer", (req: Request, res: Response)=>{
-    res.json({
-        isAnswerCorrect: false 
-    })
-})
+
 
 questions.post("/create", async (req: Request, res: Response)=>{
     const data = {...req.body};

@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import questionJson from './../static/data/question.json';
-import { generateQuiz } from '../services/quiz.services';
+import { generateQuiz, markUserAnswer } from '../services/quiz.services';
 
 const quiz = express.Router({mergeParams: true});;
 
@@ -19,8 +19,15 @@ quiz.post("/useLifeLine", (req: Request, res: Response)=>{
 
 })
 
-quiz.get("/create2", (req: Request, res: Response)=>{
-    res.send("Test")
+quiz.post("/lockAnswer", async (req: Request, res: Response) => {
+    // GET QuizID, QuestionID, AnswerID
+    const resBody = { ...req.body };
+
+    const response = await markUserAnswer(resBody);
+    
+    res.json({
+        isAnswerCorrect: false 
+    })
 })
 
 
