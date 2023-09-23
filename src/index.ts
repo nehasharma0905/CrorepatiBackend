@@ -3,7 +3,8 @@ import dotenv from 'dotenv';
 import { db_connection } from './config/connections';
 import { generateCollection } from './models';
 import bodyParser from 'body-parser';
-const routers = require("./routers")
+const routers = require("./routers");
+const cors = require('cors')
 
 
 dotenv.config();
@@ -14,6 +15,7 @@ db_connection().then(()=>{
 
 const app: Express = express();
 const port = process.env.PORT;
+app.use(cors())
 app.use(bodyParser.json())
 
 
