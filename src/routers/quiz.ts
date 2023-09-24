@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import questionJson from './../static/data/question.json';
-import { generateQuiz, markUserAnswer } from '../services/quiz.services';
+import { generateQuiz, markUserAnswer, requestLifeline } from '../services/quiz.services';
 
 const quiz = express.Router({mergeParams: true});;
 
@@ -14,8 +14,10 @@ quiz.get("/getQuiz/:username", async (req:Request, res: Response)=>{
 })
 
 
-quiz.post("/useLifeLine", (req: Request, res: Response)=>{
-    res.json({message:"lifeline used"})
+quiz.post("/useLifeLine", async(req: Request, res: Response) => {
+    // GET QuizID, QuestionID, lifelineType
+    const response = await requestLifeline(req.body);
+    res.json(response)
 
 })
 
