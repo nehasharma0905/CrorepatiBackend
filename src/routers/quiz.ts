@@ -17,7 +17,7 @@ quiz.get("/getQuiz/:username", async (req:Request, res: Response)=>{
 quiz.post("/useLifeLine", async(req: Request, res: Response) => {
     // GET QuizID, QuestionID, lifelineType
     const response = await requestLifeline(req.body);
-    res.json(response)
+    res.json({...response})
 
 })
 

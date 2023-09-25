@@ -1,7 +1,5 @@
-import { questionSchema } from './../schema/question.schema';
 import { v4 as uuidv4 } from "uuid";
 import { QuestionModel, QuizModel } from "../models";
-import { userQuizQuestionSchema } from "./../schema/quiz.schema";
 
 const lifeLineArray = [
   {
@@ -72,7 +70,7 @@ export const generateQuiz = async (username: string): Promise<any> => {
     ];
 
     const randomMedium = await QuestionModel.aggregate([
-      { $match: { difficulty: "easy" } },
+      { $match: { difficulty: "medium" } },
       { $sample: { size: numbers[2] } },
     ]);
 
@@ -84,7 +82,7 @@ export const generateQuiz = async (username: string): Promise<any> => {
     ];
 
     const randomHard = await QuestionModel.aggregate([
-      { $match: { difficulty: "easy" } },
+      { $match: { difficulty: "hard" } },
       { $sample: { size: numbers[1] } },
     ]);
 
@@ -237,9 +235,9 @@ export const requestLifeline = async (body: any) => {
         error: null,
         data: {},
     };
-    console.log("body", body);
     try {
       const getQuiz = await QuizModel.findOne({ quizId: body.quizId });
+      
         if (getQuiz) {
             const quizQuestionIndex = getQuiz.questions.findIndex(
                 (el: any, index: number) => {
@@ -249,19 +247,24 @@ export const requestLifeline = async (body: any) => {
                     else return false;
                 }
           );
+
           let res;
         switch (body.lifelineType) {
           case "50-50":
             res = await use5050lifeLine(body);
             break;
           case "Exchange Question":
-            res = await exchangeQuestionLifeline(body, getQuiz?.questions || []);
-            getQuiz.questions[quizQuestionIndex].questionId = res._id;
+            const newQuestion = await exchangeQuestionLifeline(body, getQuiz?.questions || []);
+            getQuiz.questions[quizQuestionIndex].questionId = newQuestion._id;
+            res = {
+              question: newQuestion.question,
+              options: newQuestion.options
+            }
+            
             break;
           case "Ask the Expert":
             res = await askTheExpertLifeline(body);
             break;
-          
           default:
           }
           getQuiz.questions[quizQuestionIndex].usedLifeLine = body.lifelineType;
@@ -271,7 +274,8 @@ export const requestLifeline = async (body: any) => {
           if (res) {
               apiRes.status = true;
               apiRes.message = "lifeline used successfully";
-              apiRes.data = res;
+            apiRes.data = res;
+            return apiRes;
               
             } else {
                 apiRes.message = "question not found";
