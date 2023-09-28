@@ -257,6 +257,7 @@ export const requestLifeline = async (body: any) => {
             const newQuestion = await exchangeQuestionLifeline(body, getQuiz?.questions || []);
             getQuiz.questions[quizQuestionIndex].questionId = newQuestion._id;
             res = {
+              questionId: newQuestion._id,
               question: newQuestion.question,
               options: newQuestion.options
             }
@@ -270,6 +271,7 @@ export const requestLifeline = async (body: any) => {
           getQuiz.questions[quizQuestionIndex].usedLifeLine = body.lifelineType;
           const lfind = getQuiz.lifelines.findIndex((el: any) => el.title === body.lifelineType)
           getQuiz.lifelines[lfind].used = true;
+
           await getQuiz.save();
           if (res) {
               apiRes.status = true;
